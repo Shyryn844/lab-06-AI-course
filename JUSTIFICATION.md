@@ -1,93 +1,85 @@
-# JUSTIFICATION — the design of the harness, and why
-<!-- STUDENT: replace -->
+# Lab 06 — Justification
 
-Replace this whole template with your own text. Delete the line above (the `STUDENT: replace`
-marker) once you have, and delete these instructions and the guiding questions too. Keep the headings
-that follow. Which dimension each section is graded against is in the README.
+## 1. Purpose and limits of the system
 
-Two rules for the whole document:
+The AI system may support the first stage of scholarship application screening. It may assess academic information and provide a score and a recommendation.
 
-- **Every claim about a law needs a citation to the instrument and the provision** it rests on,
-  written so a reader can find the text. You identify the instruments yourself, from the primary text.
-  A chat model's statement is not a citation.
-- **Everything you describe must be in the code or in the submitted run.** A control you describe
-  but did not build, or a refusal you state but never triggered, belongs under "what the design still
-  fails to protect against".
+However, the model must not make the final decision about an applicant's future. A human reviewer should examine uncertain cases and remain responsible for the final scholarship decision.
 
-The guiding questions are prompts, not a form.
+The model should not use an applicant's name, university, age or consent information to assess academic merit. Age and consent must be checked by the system before the model is called.
 
-## 1. What the system may do
+## 2. Ethical principles and legal basis
 
-(Dimension: Integration of Constraints into the Design.)
+### Input validation
 
-- What is the system for, stated narrowly? What decisions may it make on its own, and which may it only
-  inform?
-- For each control you built (input validation, blinding, refusal, log, escalation): which
-  constraint made you build it, and where in the code can a reader find it?
-- Did any constraint change the architecture itself, so that the design would be different without it?
-  Name a decision you made differently because of a constraint, and what you would have done otherwise.
+The system checks whether application data is valid before sending it to the model. This prevents impossible or incorrect values from producing misleading decisions.
 
-## 2. What it must refuse
+This control is connected to the UNESCO Recommendation on the Ethics of Artificial Intelligence (2021), Principle 1: Proportionality and Do No Harm.
 
-(Dimension: Refusal Boundaries and Enforcement.)
+The legal reference used in the control register is the Law of the Republic of Kazakhstan No. 94-V, On Personal Data and Their Protection, Article 7(8)-(9).
 
-- What does it refuse (purposes, inputs, applicants)? Where is each refusal enforced in code, and
-  where in your submitted run did it fire?
-- For each refusal: **which legitimate case does it also block**, and who bears that cost? Is that cost
-  acceptable, and why?
-- What happens to a refused request: is it recorded, is anyone told, can the person ask for a decision to
-  be made by a human instead?
+### Blinding
 
-## 3. What record it keeps
+The system hides the applicant's name, university, age and consent information from the model. These fields should not influence academic merit assessment.
 
-(Dimension: Accountability Record and Auditability.)
+This control supports fairness and non-discrimination. It is connected to Principle 10 of the UNESCO Recommendation on the Ethics of Artificial Intelligence (2021).
 
-- What is the **audit question** your record is designed to answer (for example, "why did this
-  applicant get this outcome, and could someone else reconstruct it without re-running the model?")?
-  State it in one sentence, then show that a record in `decisions.jsonl` answers it.
-- What is in each record, and what is left out on purpose (for example, personal data you chose not to
-  store)? Why that line?
-- How long is the record kept, who may read it, who may change it, and what stops a record being
-  edited after the fact? What does the record not let you reconstruct?
+The legal reference used in the control register is Article 14 of the Constitution of the Republic of Kazakhstan, which concerns equality before the law.
 
-## 4. The legal constraints
+### Refusal
 
-(Dimension: Identification and Citation of Legal Constraints.)
+The system must refuse requests with an unauthorized purpose, underage applicants, missing consent, invalid data or instructions hidden inside applicant fields.
 
-- Which instruments apply to an automated screening decision about people, and why do they
-  apply to this system (jurisdiction, subject matter, who is the operator)? Cite the instrument and the
-  provision for each.
-- For each, what does the law **require** of the system, and what does it merely **permit** or leave
-  to you? Where did you do more than the law requires, and why?
-- Where is the text you cite stated to apply to automated decisions specifically? If you could
-  not find a provision for a control, say so rather than inventing one.
+This control follows the UNESCO Recommendation's Principle 1: Proportionality and Do No Harm.
 
-## 5. The ethical principles
+The legal reference used in the control register is Article 19-1(1)-(3) of the Law of the Republic of Kazakhstan No. 94-V, On Personal Data and Their Protection.
 
-(Dimension: Identification of Applicable Ethical Principles.)
+### Decision logging
 
-- Which principles govern an automated screening decision, and which decision in **this** system does
-  each bear on (not in general)? Cite the source in which you found each principle named, and say
-  what status that text has.
-- Where do the principles conflict with one another in your design (for example, between
-  treating applicants identically and treating applicants fairly given what you measured)? Which did
-  you put first, and why?
-- Where does ethics demand something the law does not?
+Every decision is recorded with information such as the application ID, input hash, model version, decision, score, reason code and controls that were activated.
 
-## 6. The trade-offs
+The log records field names rather than copying all applicant field values. This supports accountability and makes later review possible.
 
-(Dimension: Trade-off Analysis and Justification.)
+This control is connected to Principle 5 of the UNESCO Recommendation on the Ethics of Artificial Intelligence (2021), Responsibility and Accountability.
 
-- For each control: what does it cost (errors, speed, reviewer time, applicant privacy, extra model
-  calls), and what harm does it prevent? Use your before-and-after measurement where you can.
-- The width of your escalation band is a trade-off too: how many applicants does it send to a person, who reads
-  them, and what happens to the cases outside it that nobody re-checks? A threshold calibrated on one
-  configuration does not transfer to another: did you recalibrate it after you changed what the model
-  sees, and what share was actually escalated?
-- Why did you choose the balance you did, and what would make you choose differently?
-- What does the design **still fail to protect against**? What would closing that gap take, and why did
-  you not do it?
+The legal reference used in the control register is Article 25(2) of the Law of the Republic of Kazakhstan No. 94-V.
 
-## AI-use declaration
+### Human escalation
 
-Half a page: which AI tools you used in this assignment and for what. If you used none, say so.
+Applications with borderline scores, missing explanations or other uncertainty are sent to a human reviewer.
+
+This is important because an automated recommendation can be incorrect and can affect access to educational opportunities.
+
+This control is connected to Principle 7 of the UNESCO Recommendation on the Ethics of Artificial Intelligence (2021), Human Oversight and Determination.
+
+The legal reference used in the control register is Article 19-1(2)-(3) of the Law of the Republic of Kazakhstan No. 94-V.
+
+## 3. What the system must refuse
+
+The system must refuse:
+
+- Requests to rank applicants by ethnicity.
+- Applications from underage applicants.
+- Applications without the required consent.
+- Invalid or impossible application data.
+- Attempts to change the system's instructions through applicant fields.
+
+A refusal must have a clear reason code. This helps reviewers understand why the system stopped processing a request.
+
+## 4. Human responsibility
+
+The AI system is a support tool, not the final decision-maker. Human reviewers must examine escalated applications and have the authority to correct an AI recommendation.
+
+Applicants should not lose an educational opportunity only because of an automated score. The fund should provide a way to review disputed decisions.
+
+## 5. Trade-offs and limitations
+
+Blinding reduced matched-pair flips to zero because applicants who differed only in hidden fields were shown identical text. This result is expected by the design and does not prove that all bias has disappeared.
+
+The harness changed 122 of 400 individual decisions and 175 scores. It also sent 40 of 400 measured applicants to human review. The actual review share was 10.0%, compared with the planned 40.8%.
+
+The harness did not increase model calls: both the bare pipeline and the harness used 400 calls in the measured run.
+
+The hardest control to connect to one specific legal provision is blinding. The ethical reason for hiding names and universities is clear, but the legal provisions do not necessarily prescribe this exact technical method. Blinding is a practical safeguard chosen to support equality and reduce irrelevant influence.
+
+The system should be tested regularly with larger samples. The fund should monitor false refusals, human-review workload and changes in decisions. Legal references should be checked against the current official versions of the relevant instruments.
